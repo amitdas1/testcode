@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+xmlns:mvc="http://www.springframework.org/schema/mvc"
+xmlns:tx="http://www.springframework.org/schema/tx"
+xmlns:context="http://www.springframework.org/schema/context"
+xsi:schemaLocation="http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-3.0.xsd
+                    http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.0.xsd     
+                    http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+                    http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd">
+ 
+<!-- ************************************************************* --> 
+    
+ <mvc:annotation-driven></mvc:annotation-driven>
+  
+<!-- ************************************************************* --> 
+
+<context:component-scan base-package="btc.controller"></context:component-scan>
+
+<!-- ************************************************************* --> 
+<!-- Configure to plugin JSON as request and response in method handler -->
+	<bean class="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter">
+		<property name="messageConverters">
+			<list>
+				<ref bean="jsonMessageConverter"/>
+			</list>
+		</property>
+	</bean>
+	
+	<!-- Configure bean to convert JSON to POJO and vice versa -->
+	<bean id="jsonMessageConverter" class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter">
+	</bean>
+	
+<bean id="viewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+    
+	<property name="prefix">		    
+			<value>/WEB-INF/pages/</value>
+	</property>	
+		
+		
+	<property name="suffix">
+	 	<value>.jsp</value>
+	</property>    
+	    
+</bean>
+
+ 
+
+ <!-- <bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+              <property name="driverClassName" value="oracle.jdbc.driver.OracleDriver"/>
+             <property name="url" value="jdbc:oracle:thin:@ec2-54-215-42-79.us-west-1.compute.amazonaws.com:1521:paybito"/>
+              <property name="username" value="test1"/>
+              <property name="password" value="test1"/>
+      </bean>  -->
+      
+      
+        <!-- SIT -->
+       <!-- <bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+              <property name="driverClassName" value="oracle.jdbc.driver.OracleDriver"/>
+             <property name="url" value="jdbc:oracle:thin:@ec2-54-215-42-79.us-west-1.compute.amazonaws.com:1521:paybito"/>
+              <property name="username" value="test1"/>
+              <property name="password" value="test1"/>
+      </bean>  -->
+     
+     <!-- demo -->
+     
+  <!-- <bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+              <property name="driverClassName" value="oracle.jdbc.driver.OracleDriver"/>
+             <property name="url" value="jdbc:oracle:thin:@ec2-13-56-230-176.us-west-1.compute.amazonaws.com:1521:paybito"/>
+              <property name="username" value="PB245_DEMO"/>
+              <property name="password" value="paybitodemo"/>
+      </bean>    -->
+
+    <bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+              <property name="driverClassName" value="oracle.jdbc.driver.OracleDriver"/>
+             <property name="url" value="jdbc:oracle:thin:@ec2-13-52-131-42.us-west-1.compute.amazonaws.com:1521:paybito"/>
+              <property name="username" value="ptradeuser245"/>
+              <property name="password" value="TR$244KFdp356io"/>
+      </bean> 
+ 
+
+
+
+
+
+
+
+
+
+    
+      <bean id="jdbcTemplate" class="org.springframework.jdbc.core.JdbcTemplate">
+         <property name="dataSource" ref="dataSource"></property>
+       </bean>
+ 
+	<bean id = "auditDAO" class="btc.dao.AuditDAO">
+	<property name="dataSource" ref="dataSource" />
+	</bean>
+
+
+
+	<bean id="CustomerLedgerDao" class="btc.dao.CustomerLedgerDao">
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+
+	<bean id="CustomerKeysDao" class="btc.dao.CustomerKeysDao">
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+
+	<bean id="PaymentHistoryDao" class="btc.dao.PaymentHistoryDao">
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+	
+	
+	
+	<bean id="customerKeysTo" class="com.btc.adapter.dao.to.CustomerKeysTo" />
+	<bean id="customerLedgerTo" class="com.btc.adapter.dao.to.CustomerLedgerTo" />
+	<bean id="paymentHistTo" class="com.btc.adapter.dao.to.PaymentHistoryTo" />
+	<bean id="payRequestTo" class="com.btc.adapter.dao.to.PaymentRequestTo" />
+	<bean id="walletHistTo" class="com.btc.adapter.dao.to.WalletHistoryTo" />
+	
+	
+	<bean id="customerRequestTo" class="btc.to.CustomerRequestTo" />
+	<bean id="customerResponseTo" class="btc.to.CustomerResponseTo" />
+	<bean id="paymentProcessingRequestTo" class="btc.to.PaymentProcessingRequestTo" />
+	<bean id="paymentProcessingResponseTo" class="btc.to.PaymentProcessingResponseTo" />
+	
+	
+	
+	
+	<bean id="auditTo" class="btc.to.AuditTo">
+</bean>
+
+	<bean id="result" class="btc.to.Result">
+	</bean>
+
+	<bean id="errResponse" class="btc.to.ErrorResponse">
+	</bean>
+
+	<bean id="adapterResponse" class="btc.to.AdapterResponse">
+	</bean>
+
+	<bean id="counterPartyService" class="btc.service.CounterPartyService">
+		<property name="auditTo" ref="auditTo" />
+		<property name="auditDAO" ref="auditDAO" />
+	</bean>
+	
+	
+	
+	<bean id = "paymentHistoryService" class="com.btc.component.service.PaymentHistoryService">
+             <property name="paymentHistoryTo" ref="paymentHistTo"/>
+	   <property name="paymentHistoryDao" ref="PaymentHistoryDao"/>
+	   </bean>
+	   <bean id = "customerLedgerService" class="com.btc.component.service.CustomerLedgerService">
+        	   <property name="customerLedgerTo" ref="customerLedgerTo"/>
+	          <property name="customerLedgerDao" ref="CustomerLedgerDao"/>
+	   </bean>
+	<bean id = "customerKeyService" class="com.btc.component.service.CustomerKeyService">
+        	   <property name="customerKeysTo" ref="customerKeysTo"/>
+	          <property name="customerKeysDao" ref="CustomerKeysDao"/>
+	   </bean>
+	
+	
+	
+	<bean id = "paybitoService" class="com.btc.adapter.service.PayBitoWalletService">
+	       <property name="customerLedService" ref="customerLedgerService"/>
+	   
+	         <property name="paymentHistService" ref="paymentHistoryService"/>
+	       
+		    <property name="customerKeyService" ref="customerKeyService"/>
+         </bean>
+	
+	<bean id = "restTemplate" class="org.springframework.web.client.RestTemplate">		
+	</bean>
+	
+</beans>
